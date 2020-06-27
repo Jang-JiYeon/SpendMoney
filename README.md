@@ -1,24 +1,24 @@
 # SpendMoney
-카카오페이에는 머니 뿌리기 기능 구현
+> 카카오페이에는 머니 뿌리기 기능 구현
 * 사용자는 다수의 친구들이 있는 대화방에서 뿌릴 금액과 받아갈 대상의 숫자를 입력하여 뿌리기 요청을 보낼 수 있습니다.
 * 요청 시 자신의 잔액이 감소되고 대화방에는 뿌리기 메세지가 발송됩니다.
 * 대화방에 있는 다른 사용자들은 위에 발송된 메세지를 클릭하여 금액을 무작위로 받아가게 됩니다.
 
-# 개발 환경
+## 개발 환경
 
-**기본 환경**
+> **기본 환경**
 * Eclipse
 * Window10
 * Git
 
-**Server**
+> **Server**
 * Java8
 * Spring Boot 2.3.1
 * Mybatis
 * H2 DB
 * Gradle
 
-# 실행
+## 실행
 * Eclipse STS 사용하지 않을 경우(사용할 경우 프로젝트 우클릭해서 실행)   
   SpendMoneyApplication.java 우클릭 -> Run As -> Java Application
 * build.gradle 우클릭 -> Gradle -> Refresh Gradle Project
@@ -26,16 +26,16 @@
   계정 정보 : application.yml   
   DB 테이블 : /SpendMoney/src/main/resources/spendMoney_db.txt
   
-# 개발 제약사항
+## 개발 제약사항
 * 개발 언어는 Java, kotlin, scala 중 익숙한 개발 언어를 선택하여 과제를 진행
 * 핵심 문제해결 전략을 간단하게 작성하여 readme.md 파일에 첨부
 * 데이터베이스 사용에는 제약이 없음
 * API 의 HTTP Method들 (GET | POST | PUT | DEL) 은 자유롭게 선택
 * 에러응답, 에러코드는 자유롭게 정의
 
-# 상세 요건
+## 상세 요건
 
-**공통사항**
+> **공통사항**
 1. 뿌리기, 받기, 조회기능을 REST API로 구현   
   1-1. 요청한 사용자의 식별값은 숫자형태 이며 "X-USER-ID"라는 HTTP Header로 전달   
   1-2. 요청한 사용자가 속한 대화방의 식별값은 문자형태이며 "X-ROOM-ID"라는 HTTP Header로 전달   
@@ -67,33 +67,36 @@
    다름사람의 뿌리기 건은이나 유효하지 않은 token은 조회 실패 응답.
 5. 뿌린 건에 대한 조회는 7일동안 가능
 
-# 응답 코드
-Code Message   
-0000 SUCCESS   
-0001 Header값을 확인 바랍니다.   
-0002 대화방ID는 문자만 가능하며, 요청자ID 숫자만 요청 가능합니다.   
-0003 인원과 금액을 입력바랍니다.   
-0004 인원과 금액은 숫자만 입력 가능합니다.   
-0005 토큰값을 입력바랍니다.  
-0006 조회 실패하였습니다.  
-0007 7일 지난 건은 조회 불가입니다.  
-0008 자신이 뿌리기한 건은 자신이 받을 수 없습니다.  
-0009 뿌리기 당 사용자는 한번만 받을 수 있습니다.  
-0010 받을 수 있는 금액이 없습니다.   
-0011 뿌린 후 10분이 지난 요청은 받을 수 없습니다.  
+## 응답 코드
+Code | Message 
+---|---
+0000 | SUCCESS   
+0001 | Header값을 확인 바랍니다.   
+0002 | 대화방ID는 문자만 가능하며, 요청자ID 숫자만 요청 가능합니다.   
+0003 | 인원과 금액을 입력바랍니다.   
+0004 | 인원과 금액은 숫자만 입력 가능합니다.   
+0005 | 토큰값을 입력바랍니다.  
+0006 | 조회 실패하였습니다.  
+0007 | 7일 지난 건은 조회 불가입니다.  
+0008 | 자신이 뿌리기한 건은 자신이 받을 수 없습니다.  
+0009 | 뿌리기 당 사용자는 한번만 받을 수 있습니다.  
+0010 | 받을 수 있는 금액이 없습니다.   
+0011 | 뿌린 후 10분이 지난 요청은 받을 수 없습니다.  
 
-# API 목록
-Method    Path                   설명   
-POST      /api/v1/sendMoney      돈 뿌리기 기능   
-POST      /api/v1/receiveMoney   돈 받기 기능   
-POST      /api/v1/searchMoney    뿌린 금액 조회    
+## API 목록
+Method | Path | 설명   
+---|---|---
+POST | /api/v1/sendMoney    |  돈 뿌리기 기능   
+POST | /api/v1/receiveMoney |  돈 받기 기능   
+POST | /api/v1/searchMoney  |  뿌린 금액 조회    
 
-# 공통 요청 헤더
-Key	       	  Value	                            설명   
-X-USER-ID	  12345678910123456789101234567891  사용자 아이디   
-X-ROOM-ID	  qwertyuiopasdfghjklzxcvbnmqwer    대화방 식별키   
+## 공통 요청 헤더
+Key	    |   	  Value	              |              설명   
+---|---|---
+X-USER-ID	| 12345678910123456789101234567891 | 사용자 아이디   
+X-ROOM-ID	| qwertyuiopasdfghjklzxcvbnmqwer  | 대화방 식별키   
 
-# 돈 뿌리기 API
+## 돈 뿌리기 API
 /api/v1/sendMoney
 
 * 요청
@@ -115,7 +118,7 @@ X-ROOM-ID	  qwertyuiopasdfghjklzxcvbnmqwer    대화방 식별키
 }
 </code></pre>
 
-# 돈 받기 API
+## 돈 받기 API
 /api/v1/receiveMoney
 
 * 요청
@@ -136,7 +139,7 @@ X-ROOM-ID	  qwertyuiopasdfghjklzxcvbnmqwer    대화방 식별키
 }
 </code></pre>
 
-# 금액 조회 API
+## 금액 조회 API
 /api/v1/searchMoney
 
 * 요청
