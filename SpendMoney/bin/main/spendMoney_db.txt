@@ -1,0 +1,19 @@
+CREATE TABLE IF NOT EXISTS SENDMASTER( 
+	room_id nvarchar(32) NOT NULL, 
+	send_id nvarchar(32) NOT NULL, 
+	sendcase_id nvarchar(3) NOT NULL,
+	send_money bigint,
+	send_time datetime NOT NULL, 
+	PRIMARY KEY (room_id, send_id, sendcase_id) 
+);
+
+CREATE TABLE IF NOT EXISTS RECEIVEMASTER( 
+	room_id nvarchar(32) NOT NULL, 
+	send_id nvarchar(32) NOT NULL, 
+	sendcase_id  nvarchar(3) NOT NULL,
+	div_money bigint,
+	receive_id nvarchar(32),
+	receive_yn nvarchar(1),
+	receive_time datetime,
+	PRIMARY KEY (room_id, send_id, sendcase_id, div_money) 
+);

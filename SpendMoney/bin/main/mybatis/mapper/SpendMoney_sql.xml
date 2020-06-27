@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.kakaopay.sm.api.SpendMapper">
+	<resultMap id="spendMoneyMap" type="com.kakaopay.sm.api.SpendMoney">
+    	<result property="roomId"			column="ROOM_ID"/>
+    	<result property="sendId"			column="SEND_ID"/>
+    	<result property="sendCaseId"		column="SENDCASE_ID"/>
+    	<result property="sendMoney"		column="SEND_MONEY"/>
+    	<result property="sendTime"			column="SEND_TIME"/>
+    	<result property="divMoney"			column="DIV_MONEY"/>
+    	<result property="receiveId"		column="RECEIVE_ID"/>
+    	<result property="receiveYn"		column="RECEIVE_YN"/>
+    	<result property="receiveTime"		column="RECEIVE_TIME"/>
+    </resultMap>
+    
+    <!-- 요청자 정보 insert -->
+	<insert id="insertSendMaster" parameterType="java.util.HashMap">
+	    INSERT INTO SENDMASTER ( 
+			ROOM_ID
+			,SEND_ID
+			,SENDCASE_ID
+			,SEND_MONEY
+			,SEND_TIME
+		)VALUES(
+				#{roomId, 		jdbcType=VARCHAR}	
+				, #{sendId, 	jdbcType=VARCHAR}
+				, #{sendCaseId, jdbcType=VARCHAR}	
+				, #{sendMoney, 	jdbcType=VARCHAR}
+				, CURRENT_TIMESTAMP
+		)	
+    </insert>
+
+	<!-- 받는이 정보 insert -->
+	<insert id="insertReceiveMaster" parameterType="java.util.HashMap">
+	    INSERT INTO RECEIVEMASTER ( 
+			ROOM_ID
+			,SEND_ID
+			,SENDCASE_ID
+			,DIV_MONEY
+			,RECEIVE_ID
+			,RECEIVE_YN
+			<!-- ,RECEIVE_TIME -->
+		)VALUES
+		<foreach collection="list" item="i" separator=",">		
+		(
+			#{i.roomId, 		jdbcType=VARCHAR}	
+			, #{i.sendId,		jdbcType=VARCHAR}
+			, #{i.sendCaseId, 	jdbcType=VARCHAR}
+			, #{i.divMoney, 	jdbcType=VARCHAR}
+			, #{i.receiveId, 	jdbcType=VARCHAR}
+			, #{i.receiveYn, 	jdbcType=VARCHAR}
+		)
+		</foreach>
+    </insert>
+
+	<!-- 랜덤금액 받으려는 사용자가 요청자와 같은지 체크 -->
+    <select id="checkIdentify" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM SENDMASTER
+		 WHERE ROOM_ID = #{roomId}
+		   AND SEND_ID = #{sendId}
+		   AND SENDCASE_ID = #{token}
+    </select>
+    
+    <!-- 랜덤금액 받으려는 사용자가 이미 받은적 있는지 체크 -->
+    <select id="checkReceiveHistory" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM RECEIVEMASTER
+		 WHERE ROOM_ID = #{roomId}
+		   AND SENDCASE_ID = #{token}
+		   AND RECEIVE_ID = #{sendId}
+		   AND RECEIVE_YN = 'Y'
+    </select>
+    
+    <!-- 뿌리기가 호출된 대화방과 동일한 대화방에 속한 요청건의 분배금액  조회 -->
+    <select id="selectDivMoney" parameterType="java.util.HashMap" resultMap="spendMoneyMap">
+		SELECT R.ROOM_ID, R.SEND_ID, R.SENDCASE_ID, R.DIV_MONEY, R.RECEIVE_ID, R.RECEIVE_YN, R.RECEIVE_TIME,
+			   S.SEND_MONEY, S.SEND_TIME
+		  FROM RECEIVEMASTER R
+		 INNER JOIN SENDMASTER S
+			ON R.ROOM_ID = S.ROOM_ID
+		   AND R.SEND_ID = S.SEND_ID
+		   AND R.SENDCASE_ID = S.SENDCASE_ID
+		 WHERE R.ROOM_ID = #{roomId}
+		   AND R.SENDCASE_ID = #{token}
+		   AND (R.RECEIVE_YN != 'Y' OR R.RECEIVE_YN IS NULL)
+    </select>
+    
+    <!-- 뿌리기 건의 현재 상태 조회 -->
+    <select id="selectSendMoney" parameterType="java.util.HashMap" resultMap="spendMoneyMap">
+		SELECT R.ROOM_ID, R.SEND_ID, R.SENDCASE_ID, R.DIV_MONEY, R.RECEIVE_ID, R.RECEIVE_YN, R.RECEIVE_TIME,
+			   S.SEND_MONEY, S.SEND_TIME
+		  FROM RECEIVEMASTER R
+		 INNER JOIN SENDMASTER S
+			ON R.ROOM_ID = S.ROOM_ID
+		   AND R.SEND_ID = S.SEND_ID
+		   AND R.SENDCASE_ID = S.SENDCASE_ID
+		 WHERE R.ROOM_ID = #{roomId}
+		   AND R.SEND_ID = #{sendId}
+		   AND R.SENDCASE_ID = #{token}
+    </select>
+
+	<!-- 받기 완료 후 저장 -->
+    <update id="updateReceiveDivMoney" parameterType="java.util.HashMap">
+		UPDATE RECEIVEMASTER
+		   SET  
+		   	   RECEIVE_ID 	= #{sendId}
+		   	   ,RECEIVE_YN 	= 'Y'
+		   	   ,RECEIVE_TIME = CURRENT_TIMESTAMP
+		 WHERE ROOM_ID 		= #{roomId}	
+		   AND SENDCASE_ID 	= #{token}
+		   AND DIV_MONEY 	= #{divMoney}
+    </update>
+    
+</mapper>

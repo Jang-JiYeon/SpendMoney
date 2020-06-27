@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <configuration status="info" monitorInterval="30"> -->
+<configuration>
+
+  <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder>
+          <pattern>[%-5p] %d{[yyyy-MM-dd HH:mm:ss]} [%F:%L - %M] - %m%n</pattern>
+      </encoder>
+  </appender>  
+
+    <!-- Log everything in custom package -->
+	<logger name="com.boraji.tutorial.springboot" level="info" additivity="false">
+		<appender-ref ref="Console" />
+	</logger>
+
+    <!-- Log everything in Spring Boot -->
+	<logger name="org.springframework.boot" level="info" additivity="false">
+		<appender-ref ref="Console" />
+	</logger>
+      
+    <!-- Log everything in Spring Core -->
+	<logger name="org.springframework.core" level="info" additivity="false">
+		<appender-ref ref="Console" />
+	</logger>
+  
+    <!-- jdbc log -->
+	<logger name="jdbc.sqlonly" level="error" additivity="false">
+		<appender-ref ref="Console" />
+	</logger>
+	<logger name="jdbc.sqltiming" level="info" additivity="false">
+		<appender-ref ref="Console" />
+	</logger>
+	<logger name="jdbc.audit" level="error" additivity="false">
+		<appender-ref ref="Console" />
+	</logger>
+	<logger name="jdbc.resultset" level="error" additivity="false">
+		<appender-ref ref="Console" />
+	</logger>
+	<!-- 로그로 데이터 결과값 보고 싶은 경우 info로 level 변경 -->
+	<logger name="jdbc.resultsettable" level="error" additivity="false">
+		<appender-ref ref="Console" />
+	</logger>
+	<logger name="jdbc.connection" level="error" additivity="false">
+		<appender-ref ref="Console" />
+	</logger>
+
+	<!-- Root Logger -->
+	<root level="info">
+		<appender-ref ref="Console" />
+	</root>
+
+</configuration>
