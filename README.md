@@ -23,8 +23,8 @@
   SpendMoneyApplication.java 우클릭 -> Run As -> Java Application
 * build.gradle 우클릭 -> Gradle -> Refresh Gradle Project
 * http://localhost/spendMoney_db 접속해서 로그인 후 DB 테이블 생성   
-  계정 정보 : application.yml   
-  DB 테이블 : /SpendMoney/src/main/resources/spendMoney_db.txt
+  - 계정 정보 : application.yml   
+  - DB 테이블 : /SpendMoney/src/main/resources/spendMoney_db.txt
 
 # 핵심 문제해결 전략
 ## 개발 제약사항
