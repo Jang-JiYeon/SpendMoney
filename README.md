@@ -100,7 +100,7 @@
   - 체크과정에서 걸리는 것이 없다면, 뿌리기 건의 현재 상태 응닶값으로 전달
 
 ## 응답 코드
-Code | Message | used
+Code | Message | Used
 ---|---|---
 0000 | SUCCESS | 공통
 0001 | Header값을 확인 바랍니다. | 공통
